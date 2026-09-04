@@ -547,6 +547,7 @@ Android 版本：
 - 自动化：新增 `BackupPolicyDeviceTest` 2/2 通过；合并后的 API 36 完整设备测试 32/32 通过。测试直接读取打包后的 XML 资源，防止 DataStore 所在目录遗漏。
 - 产物复核：`aapt2 dump xmltree` 确认修正规则已进入 Release；包含后续 HyperOS 提醒保障修正并与 Git 归档源码一致的当前候选 APK SHA-256 为 `6EEE867A481C88FB83765AEEF8BC28966E8C292E044C53CEB6D29667BEEE4064`。
 - 未完成边界：尚未在两台 Android 12+ 实体设备或 Setup Wizard 环境完成真实传输，因此第 13 节“设备到设备迁移验证通过”仍不勾选。
+
 - 当前候选包已在 Xiaomi Android 14 真机同签名覆盖升级；现有目标“吃饭”、当天完成态和连续第 1 天均保留，未清除或改写用户数据。升级后通知权限保持允许，下一有效 Alarm 为 `2026-09-04 20:00`。
 
 ## 14.5 Debug / Release 数据隔离策略
@@ -571,6 +572,13 @@ Android 版本：
 - 在已解锁通知栏真实点击该通知后，系统进入 `com.boxsmall.onething.debug/com.boxsmall.onething.MainActivity`，通知按 `AUTO_CANCEL` 清除；NT-12、NT-15、NT-16 通过。
 - 测试结束后已卸载 `com.boxsmall.onething.debug` 与 `com.boxsmall.onething.debug.test`，Debug 目标、通知、Alarm 和临时厂商权限随包一并清除，正式包数据未受影响。
 - 设备持有人随后明确授权正式版系统策略：`com.boxsmall.onething` 的自启动与“无限制”省电均已在 Xiaomi 系统界面确认选中，底层操作为 `allow`、待机桶为 `5`；正式版次日 `2026-09-05 20:00` Alarm 重新登记后为 `power_pending=--`。
+
+## 14.7 2026-09-04 GitHub 归档与签名备份记录
+
+- 与最终候选 APK 对应的源码提交为 `65314617803b4a8b95b846963a8389e6afffdd53`；归档分支 `codex/v1.0.0-rc1-archive` 和注释标签 `v1.0.0-rc.1` 已推送至 GitHub，远端剥离标签指向该提交，`main` 未改写。
+- 仓库外已生成包含 `onething-release.jks`、`keystore.properties` 和备份清单的 WinZip AES-256 加密压缩包；压缩包 SHA-256 为 `FA44F49761F8603B8DAFEE9FE425DCA4A1FE2E380F8F4F24195799178E7A4116`。
+- 已使用独立恢复码实际解密并对两个源文件逐项进行 SHA-256 比较，结果一致；压缩包、恢复码和校验清单均未进入 Git。
+- 该副本仍与原始签名材料位于同一台电脑和磁盘，不能视为离线备份；取得独立介质后仍须完成异盘复制和再次读取校验。
 
 ---
 
