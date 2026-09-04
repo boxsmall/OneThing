@@ -1,0 +1,19 @@
+# Gradle / Android Studio
+.gradle/
+.idea/
+build/
+**/build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Signing material must never enter source control
+*.jks
+*.keystore
+keystore.properties
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.iml
