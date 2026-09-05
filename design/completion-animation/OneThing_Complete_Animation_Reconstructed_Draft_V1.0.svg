@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1320" viewBox="0 0 1920 1320">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#141414" flood-opacity="0.08"/>
+    </filter>
+    <filter id="yellowGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feFlood flood-color="#FFE9A8" flood-opacity="0.9"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="greenFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FABF45"/>
+      <stop offset="1" stop-color="#59AD5E"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#8B867F"/>
+    </marker>
+    <symbol id="numberOne" viewBox="0 0 108 108">
+      <path d="M34,35 C34,32.5 35.4,30.7 37.6,29.4 L59.8,16.8 C62.1,15.5 65,15.3 67.3,16.4 C69.6,17.5 71,19.8 71,22.4 L71,84 C71,87.3 68.3,90 65,90 L57.6,90 C54.3,90 51.6,87.3 51.6,84 L51.6,40.2 L43.5,44.9 C40.9,46.4 37.6,45.9 35.6,43.7 C34.6,42.6 34,41.1 34,39.6 Z" fill="#141414"/>
+    </symbol>
+    <style>
+      .bg { fill:#F7F3EC; }
+      .card { fill:#FFFFFF; stroke:#E6DED3; stroke-width:1.5; }
+      .stage { fill:#FDFBF7; stroke:#EEE7DE; stroke-width:1; }
+      .title { font-family:"Microsoft YaHei","Noto Sans SC",sans-serif; font-weight:700; fill:#141414; }
+      .body { font-family:"Microsoft YaHei","Noto Sans SC",sans-serif; fill:#47433E; }
+      .muted { font-family:"Microsoft YaHei","Noto Sans SC",sans-serif; fill:#8B867F; }
+      .time { font-family:"Segoe UI",sans-serif; font-weight:700; fill:#B57900; }
+      .tiny { font-family:"Microsoft YaHei","Noto Sans SC",sans-serif; font-size:14px; fill:#8B867F; }
+      .pill { fill:#FFF2CC; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1920" height="1320"/>
+
+  <g transform="translate(56 48)">
+    <text class="title" font-size="44">一件 OneThing · 完成动画关键帧执行稿</text>
+    <text class="body" y="42" font-size="18">方案 A · Logo 点亮版　｜　总时长 1.75s　｜　60fps　｜　Lottie 品牌层 + Compose 动态文案层</text>
+    <rect class="pill" x="1504" y="-6" width="300" height="44" rx="22"/>
+    <circle cx="1532" cy="16" r="8" fill="#FABF45"/>
+    <path d="M1558 16 H1610" stroke="#C9B99C" stroke-width="3" marker-end="url(#arrow)"/>
+    <circle cx="1636" cy="16" r="8" fill="#59AD5E"/>
+    <text class="body" x="1660" y="23" font-size="17">未完成 → 完成</text>
+  </g>
+
+  <g transform="translate(56 142)">
+    <line x1="24" y1="25" x2="1760" y2="25" stroke="#D9D1C6" stroke-width="3"/>
+    <g class="body" font-size="15" text-anchor="middle">
+      <circle cx="24" cy="25" r="9" fill="#FABF45"/><text x="24" y="58">0ms</text>
+      <circle cx="244" cy="25" r="9" fill="#FABF45"/><text x="244" y="58">120</text>
+      <circle cx="464" cy="25" r="9" fill="#FABF45"/><text x="464" y="58">260</text>
+      <circle cx="684" cy="25" r="9" fill="#FABF45"/><text x="684" y="58">520</text>
+      <circle cx="904" cy="25" r="9" fill="#FABF45"/><text x="904" y="58">980</text>
+      <circle cx="1124" cy="25" r="9" fill="#59AD5E"/><text x="1124" y="58">1250</text>
+      <circle cx="1464" cy="25" r="9" fill="#59AD5E"/><text x="1464" y="58">1650</text>
+      <circle cx="1760" cy="25" r="9" fill="#59AD5E"/><text x="1760" y="58">1800ms</text>
+    </g>
+  </g>
+
+  <!-- Keyframe 01 -->
+  <g transform="translate(48 228)">
+    <rect class="card" width="432" height="430" rx="28" filter="url(#shadow)"/>
+    <text class="title" x="24" y="38" font-size="20">01 · 点击前状态</text>
+    <text class="time" x="408" y="38" font-size="15" text-anchor="end">0ms</text>
+    <rect class="stage" x="24" y="58" width="384" height="280" rx="20"/>
+    <text class="muted" x="48" y="88" font-size="13">9月2日　星期三</text>
+    <text class="title" x="216" y="125" font-size="15" text-anchor="middle">今天</text>
+    <text class="title" x="216" y="159" font-size="25" text-anchor="middle">走路 20 分钟</text>
+    <rect x="184" y="178" width="64" height="64" rx="21" fill="#FFF0C8"/>
+    <circle cx="216" cy="210" r="10" fill="#FABF45"/>
+    <text class="title" x="216" y="268" font-size="34" text-anchor="middle">7</text>
+    <g transform="translate(92 285)">
+      <circle cx="0" cy="0" r="7" fill="#FABF45"/><circle cx="42" cy="0" r="7" fill="#FABF45"/>
+      <circle cx="84" cy="0" r="7" fill="#FABF45"/><circle cx="126" cy="0" r="7" fill="#FABF45"/>
+      <circle cx="168" cy="0" r="7" fill="#FABF45"/><circle cx="210" cy="0" r="7" fill="#FABF45"/>
+      <circle cx="252" cy="0" r="7" fill="#FDFBF7" stroke="#FABF45" stroke-width="2"/>
+    </g>
+    <rect x="48" y="307" width="336" height="47" rx="18" fill="#FABF45"/>
+    <text class="title" x="216" y="337" font-size="17" text-anchor="middle">我完成了</text>
+    <text class="body" x="24" y="376" font-size="15">未完成首页保持正常，等待用户点击。</text>
+    <text class="muted" x="24" y="402" font-size="14">今日黄点为空心，主按钮可用。</text>
+  </g>
+
+  <!-- Keyframe 02 -->
+  <g transform="translate(512 228)">
+    <rect class="card" width="432" height="430" rx="28" filter="url(#shadow)"/>
+    <text class="title" x="24" y="38" font-size="20">02 · 按钮反馈</text>
+    <text class="time" x="408" y="38" font-size="15" text-anchor="end">0–120ms</text>
+    <rect class="stage" x="24" y="58" width="384" height="280" rx="20"/>
+    <g opacity="0.22">
+      <rect x="78" y="90" width="276" height="16" rx="8" fill="#141414"/>
+      <rect x="126" y="125" width="180" height="12" rx="6" fill="#141414"/>
+      <circle cx="216" cy="188" r="36" fill="#FFF0C8"/>
+    </g>
+    <rect x="58" y="225" width="316" height="54" rx="20" fill="#FABF45"/>
+    <rect x="66" y="232" width="300" height="40" rx="16" fill="none" stroke="#B57900" stroke-width="2" stroke-dasharray="6 5"/>
+    <text class="title" x="216" y="258" font-size="18" text-anchor="middle">我完成了</text>
+    <text class="time" x="216" y="312" font-size="16" text-anchor="middle">100% → 96% → 100%</text>
+    <text class="body" x="24" y="376" font-size="15">立即防重入，轻触觉反馈。</text>
+    <text class="muted" x="24" y="402" font-size="14">缩放不改变布局尺寸与点击热区。</text>
+  </g>
+
+  <!-- Keyframe 03 -->
+  <g transform="translate(976 228)">
+    <rect class="card" width="432" height="430" rx="28" filter="url(#shadow)"/>
+    <text class="title" x="24" y="38" font-size="20">03 · Logo 聚焦</text>
+    <text class="time" x="408" y="38" font-size="15" text-anchor="end">120–260ms</text>
+    <rect class="stage" x="24" y="58" width="384" height="280" rx="20"/>
+    <g opacity="0.12">
+      <rect x="58" y="86" width="316" height="16" rx="8" fill="#141414"/>
+      <rect x="104" y="116" width="224" height="12" rx="6" fill="#141414"/>
+      <rect x="62" y="292" width="308" height="20" rx="10" fill="#141414"/>
+    </g>
+    <use href="#numberOne" x="144" y="110" width="144" height="144"/>
+    <circle cx="268" cy="214" r="10" fill="#FABF45"/>
+    <text class="muted" x="216" y="280" font-size="14" text-anchor="middle">正在记录…</text>
+    <text class="body" x="24" y="376" font-size="15">页面内容淡化，A1 Logo 居中放大。</text>
+    <text class="muted" x="24" y="402" font-size="14">背景保持 #FDFBF7，不切换黑幕。</text>
+  </g>
+
+  <!-- Keyframe 04 -->
+  <g transform="translate(1440 228)">
+    <rect class="card" width="432" height="430" rx="28" filter="url(#shadow)"/>
+    <text class="title" x="24" y="38" font-size="20">04 · 黄色点亮</text>
+    <text class="time" x="408" y="38" font-size="15" text-anchor="end">260–520ms</text>
+    <rect class="stage" x="24" y="58" width="384" height="280" rx="20"/>
+    <use href="#numberOne" x="144" y="110" width="144" height="144"/>
+    <circle cx="268" cy="214" r="36" fill="#FFE9A8" opacity="0.45"/>
+    <circle cx="268" cy="214" r="18" fill="#FABF45" filter="url(#yellowGlow)"/>
+    <g fill="#FABF45">
+      <circle cx="310" cy="178" r="4"/><circle cx="321" cy="219" r="3"/>
+      <circle cx="299" cy="248" r="3.5"/><circle cx="250" cy="168" r="3"/>
+      <circle cx="336" cy="194" r="2.5"/>
+    </g>
+    <text class="time" x="216" y="292" font-size="15" text-anchor="middle">1.0× → 1.25× → 1.08×</text>
+    <text class="body" x="24" y="376" font-size="15">柔光扩散，4–6 个微粒短暂出现。</text>
+    <text class="muted" x="24" y="402" font-size="14">不使用彩带、烟花或爆炸粒子。</text>
+  </g>
+
+  <!-- Keyframe 05 -->
+  <g transform="translate(48 690)">
+    <rect class="card" width="432" height="430" rx="28" filter="url(#shadow)"/>
+    <text class="title" x="24" y="38" font-size="20">05 · 半环绕行</text>
+    <text class="time" x="408" y="38" font-size="15" text-anchor="end">520–980ms</text>
+    <rect class="stage" x="24" y="58" width="384" height="280" rx="20"/>
+    <use href="#numberOne" x="144" y="110" width="144" height="144"/>
+    <path d="M270 216 C342 190 336 108 252 98 C208 93 180 111 166 134" fill="none" stroke="#FABF45" stroke-width="7" stroke-linecap="round" stroke-dasharray="5 12" opacity="0.65"/>
+    <path d="M270 216 C342 190 336 108 252 98 C208 93 180 111 166 134" fill="none" stroke="#FFE9A8" stroke-width="16" stroke-linecap="round" opacity="0.28"/>
+    <circle cx="183" cy="118" r="13" fill="#FABF45" filter="url(#yellowGlow)"/>
+    <circle cx="273" cy="213" r="7" fill="#FABF45" opacity="0.35"/>
+    <text class="muted" x="216" y="294" font-size="14" text-anchor="middle">右下 → 右侧 → 上方 → 回归</text>
+    <text class="body" x="24" y="376" font-size="15">核心品牌动作：不闭合的柔和半环。</text>
+    <text class="muted" x="24" y="402" font-size="14">不是加载圈，不做高速 360° 旋转。</text>
+  </g>
+
+  <!-- Keyframe 06 -->
+  <g transform="translate(512 690)">
+    <rect class="card" width="432" height="430" rx="28" filter="url(#shadow)"/>
+    <text class="title" x="24" y="38" font-size="20">06 · 完成定格</text>
+    <text class="time" x="408" y="38" font-size="15" text-anchor="end">980–1250ms</text>
+    <rect class="stage" x="24" y="58" width="384" height="280" rx="20"/>
+    <use href="#numberOne" x="154" y="82" width="124" height="124"/>
+    <circle cx="261" cy="172" r="11" fill="#59AD5E"/>
+    <path d="M254 172 L259 177 L269 164" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="94" y="218" width="92" height="8" rx="4" fill="#FABF45"/>
+    <path d="M196 222 H236" stroke="url(#greenFade)" stroke-width="8" stroke-linecap="round"/>
+    <rect x="246" y="218" width="92" height="8" rx="4" fill="#59AD5E"/>
+    <text class="title" x="216" y="263" font-size="22" text-anchor="middle">今天完成</text>
+    <text class="body" x="216" y="292" font-size="16" text-anchor="middle">连续第 <tspan fill="#59AD5E" font-weight="700">8</tspan> 天</text>
+    <text class="body" x="24" y="376" font-size="15">黄点平滑变绿，小勾轻量出现。</text>
+    <text class="muted" x="24" y="402" font-size="14">文案由 Compose 动态渲染并上移淡入。</text>
+  </g>
+
+  <!-- Keyframe 07 -->
+  <g transform="translate(976 690)">
+    <rect class="card" width="432" height="430" rx="28" filter="url(#shadow)"/>
+    <text class="title" x="24" y="38" font-size="20">07 · 成功停留</text>
+    <text class="time" x="408" y="38" font-size="15" text-anchor="end">1250–1650ms</text>
+    <rect class="stage" x="24" y="58" width="384" height="280" rx="20"/>
+    <use href="#numberOne" x="164" y="82" width="104" height="104"/>
+    <circle cx="254" cy="158" r="9" fill="#59AD5E"/>
+    <text class="title" x="216" y="222" font-size="24" text-anchor="middle">今天完成</text>
+    <text class="body" x="216" y="254" font-size="17" text-anchor="middle">连续第 <tspan fill="#59AD5E" font-weight="700">8</tspan> 天</text>
+    <text class="muted" x="216" y="290" font-size="14" text-anchor="middle">明天继续</text>
+    <text class="body" x="24" y="376" font-size="15">停留 0.4 秒，保证结果可被看清。</text>
+    <text class="muted" x="24" y="402" font-size="14">无分享、奖励或额外功能入口。</text>
+  </g>
+
+  <!-- Keyframe 08 -->
+  <g transform="translate(1440 690)">
+    <rect class="card" width="432" height="430" rx="28" filter="url(#shadow)"/>
+    <text class="title" x="24" y="38" font-size="20">08 · 返回已完成首页</text>
+    <text class="time" x="408" y="38" font-size="15" text-anchor="end">1650–1800ms</text>
+    <rect class="stage" x="24" y="58" width="384" height="280" rx="20"/>
+    <text class="muted" x="48" y="88" font-size="13">9月2日　星期三</text>
+    <text class="title" x="216" y="126" font-size="15" text-anchor="middle">今天</text>
+    <text class="title" x="216" y="162" font-size="25" text-anchor="middle">走路 20 分钟</text>
+    <path d="M196 206 L211 222 L240 181" fill="none" stroke="#59AD5E" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="216" y="260" font-family="Microsoft YaHei,Noto Sans SC,sans-serif" font-size="22" font-weight="700" fill="#59AD5E" text-anchor="middle">今天已完成</text>
+    <text class="muted" x="216" y="285" font-size="14" text-anchor="middle">连续第 8 天</text>
+    <g transform="translate(92 311)">
+      <circle cx="0" cy="0" r="7" fill="#59AD5E"/><circle cx="42" cy="0" r="7" fill="#59AD5E"/>
+      <circle cx="84" cy="0" r="7" fill="#59AD5E"/><circle cx="126" cy="0" r="7" fill="#59AD5E"/>
+      <circle cx="168" cy="0" r="7" fill="#59AD5E"/><circle cx="210" cy="0" r="7" fill="#59AD5E"/>
+      <circle cx="252" cy="0" r="9" fill="#FDFBF7" stroke="#59AD5E" stroke-width="2"/><circle cx="252" cy="0" r="5" fill="#59AD5E"/>
+    </g>
+    <text class="body" x="24" y="376" font-size="15">动效自动淡出，首页状态已经刷新。</text>
+    <text class="muted" x="24" y="402" font-size="14">无需关闭按钮，不允许再次完成。</text>
+  </g>
+
+  <g transform="translate(56 1170)">
+    <rect width="1808" height="100" rx="24" fill="#141414"/>
+    <text x="30" y="38" font-family="Microsoft YaHei,Noto Sans SC,sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">实现边界</text>
+    <text x="30" y="69" font-family="Microsoft YaHei,Noto Sans SC,sans-serif" font-size="15" fill="#D8D2C9">先写 Completion，成功后播放；Lottie 只负责 Logo / 点 / 光晕 / 轨迹 / 粒子 / 小勾，动态文案与页面状态由 Compose 控制。</text>
+    <text x="1778" y="38" font-family="Segoe UI,sans-serif" font-size="14" fill="#FABF45" text-anchor="end">V1.0 · 2026-09-05</text>
+    <text x="1778" y="69" font-family="Microsoft YaHei,Noto Sans SC,sans-serif" font-size="14" fill="#D8D2C9" text-anchor="end">设计输入已归档 · 尚未替换当前 V1 Overlay</text>
+  </g>
+</svg>
