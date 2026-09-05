@@ -363,20 +363,21 @@
 
 ### 2.19 2026-09-05 V1.1 品牌体验升级开发完成
 
-- 在独立分支 `codex/v1.1-brand-experience` 完成 `1.1.0 (2)`；V1.0.0 RC 提交与 `v1.0.0-rc.1` 标签保持不变。设计与任务基线提交为 `5ef31a2`，完整实现提交为 `31e9d32`。
+- 在独立分支 `codex/v1.1-brand-experience` 完成 `1.1.0 (2)`；V1.0.0 RC 提交与 `v1.0.0-rc.1` 标签保持不变。设计与任务基线提交为 `5ef31a2`，主体实现提交为 `31e9d32`，真机一致性修正与最终 Release 源码提交为 `295b1dc`。
 - 8 个目标 Vector Drawable 已进入运行时；新增稳定 `GoalIconKey`，数据库只保存字符串 key，未知值回退 `other`。创建页默认“其他”并允许明确选择，设置页可修改；首页、记录和历史显示同一持久化图标。
 - Room 从 schema v1 升到 v2，`goals.iconKey` 为 `TEXT NOT NULL DEFAULT 'other'`；显式 `MIGRATION_1_2` 和 `2.json` 已提交。真实 v1 schema 迁移、Completion 保留、默认图标和数据库重开持久化测试通过，不使用 destructive migration。
 - 接入 AndroidX SplashScreen：`MainActivity` 使用 `Theme.OneThing.Starting`，暖白背景和 A1 Logo，`installSplashScreen()` 位于 `super.onCreate()` 前，退出淡出/轻微缩放 200ms；没有独立 `SplashActivity` 或固定等待。
 - 按权威 JPG 生成并接入基础、连续 3/7/30 天 4 个 Lottie JSON。全部为 1080×1080、60fps、108 帧/1.8 秒、无文字和外部图片，单文件 9,399–12,985 bytes；Compose 负责动态文案、TalkBack 单次语义、返回/后台中断和资源/移除动画降级。
 - 完成流程会等待 Completion 持久化结果可读，再显示动画并锁定本次真实连续天数；避免数据库已写入但 UI 流尚未刷新时展示旧 streak。重复点击仍受 operation 状态和数据库唯一约束双重保护，进程重建不补播动画。
 - 视觉 QA 将权威成功帧与 API 36 实现放入同一 `completion_comparison.png` 对照，P0/P1/P2 均为 0，根目录 `design-qa.md` 结论为 `final result: passed`。启动页图、创建页、设置页、动画中间帧和成功帧均保存在 `design/screens/` 与 `design/qa/v1.1/`。
-- 最终门禁：JVM 37/37；API 26 45/45；API 36 45/45；Lint 0 errors（10 条 SDK/依赖版本提示）；Debug、AndroidTest、固定签名 Release 均构建成功。API 26/API 36 的冷启动、热启动、深色系统主题和旋转冒烟通过。
-- Release APK 为 1,728,765 bytes，SHA-256 `5B60C4DD1740F14047EA36C4DFF1A9AB125B1ACDA068BDE9D0F85E1768748C0E`；较 V1.0.0 增加 167,440 bytes（10.72%）。同一 RSA 4096 证书的 v2/v3 签名通过，Release 不含 `INTERNET`、第三方统计、Debug 测试宿主或独立 Splash Activity。
-- 用户明确要求本轮暂不操作真机，因此 Xiaomi Android 14 实体回归和正式版 `1.0.0 → 1.1.0` 覆盖安装未执行；不把这两项写成已验收。完整发布证据见《一件_APP_本地发布记录_V1.1.0.md》。
+- 最终门禁：JVM 37/37；API 26 46/46；API 36 46/46；Xiaomi Android 14 实体机无界面自动化 17/17；Lint 0 errors（10 条 SDK/依赖版本提示）；Debug、AndroidTest、固定签名 Release 均构建成功。双 API 模拟器和实体机均完成相应冷/热启动、深色系统主题与旋转冒烟。
+- Release APK 为 1,728,765 bytes，SHA-256 `2968A5D67E5A47BEF8D580C2C59082FFF551680E208133DCC1ED0A448FA64842`；较 V1.0.0 增加 167,440 bytes（10.72%）。同一 RSA 4096 证书的 v2/v3 签名通过，Release 不含 `INTERNET`、第三方统计、Debug 测试宿主或独立 Splash Activity。
+- Xiaomi Android 14 / API 34 实体机完成独立 Debug 全新数据主流程，并用相同正式签名从 `1.0.0 (1)` 无清数据覆盖到 `1.1.0 (2)`；原目标、9 月 3–5 日 Completion、连续第 3 天和 20:00 提醒均保留。HyperOS 阻止 instrumentation 测试进程启动 Compose `TestHostActivity`，因此真机结果准确拆分为 17/17 无界面自动化与完整人工 UI 路径，不写成真机 46/46。
+- 真机发现完成/中断首页仍使用居中“设置 ›”，违反首页统一右上角齿轮规则；修复提交 `295b1dc` 增加自动化断言，并在提交前使用实体机覆盖验证。最终签名包再次安装后齿轮入口、目标、连续天数和迁移图标均正确。
 
 ## 3. 下一阶段未完成项
 
-`V1.1 品牌体验升级`的代码、设计资产、自动化、双 API 模拟器验收、签名 Release 和同步文档已经完成。当前仅保留用户明确暂缓的实体手机安装与覆盖升级签字；详细状态见 `docs/一件_APP_V1.1_品牌体验升级开发任务.md` 和 `docs/一件_APP_本地发布记录_V1.1.0.md`。
+`V1.1 品牌体验升级`的代码、设计资产、自动化、双 API 模拟器验收、Xiaomi 实体机主流程、签名 Release 覆盖升级和同步文档已经完成。当前没有阻塞本地发布的未完成项；详细状态见 `docs/一件_APP_V1.1_品牌体验升级开发任务.md` 和 `docs/一件_APP_本地发布记录_V1.1.0.md`。
 
 以下内容属于既有 V1 的非阻塞增强验收：
 

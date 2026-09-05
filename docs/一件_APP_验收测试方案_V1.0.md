@@ -582,16 +582,18 @@ Android 版本：
 
 ## 14.8 2026-09-05 V1.1 品牌体验升级验收记录
 
-- 测试版本：`1.1.0 (2)`；Application ID：`com.boxsmall.onething`；实现提交：`31e9d32`；分支：`codex/v1.1-brand-experience`。
-- JVM：37/37 通过。API 26：45/45 通过。API 36：45/45 通过。两套设备结果均为 0 failure、0 error、0 skipped。
+- 测试版本：`1.1.0 (2)`；Application ID：`com.boxsmall.onething`；主体实现提交：`31e9d32`；真机修正与最终 Release 源码：`295b1dc`；分支：`codex/v1.1-brand-experience`。
+- JVM：37/37 通过。API 26：46/46 通过。API 36：46/46 通过。Xiaomi Android 14 实体机无界面自动化：17/17 通过；实体机完整人工主流程通过。
 - Room 迁移从真实 v1 schema 建库后升级到 v2，验证原目标、开始日、active slot、Completion 和 `other` 默认图标；另以文件数据库关闭重开验证用户选择图标不丢失。
 - Compose UI 覆盖默认/选择图标、选中语义、设置修改、历史展示、320dp/600dp、1.5×/2.0×字体；完成反馈覆盖单次触发、数据先保存、正常结束、返回中断、进程重建不补播、资源失败和移除动画降级、TalkBack 单次完整朗读。
 - 4 个 Lottie JSON 均通过实际解析与结构约束：1080×1080、60fps、1.8 秒、不循环、无外部图片、无文字层且小于 200KB。
 - API 26 和 API 36 均完成 Debug 冷启动、热启动、深色系统主题与旋转冒烟；`MainActivity` 始终有效，无独立 `SplashActivity`。通知打开返回首页/创建页由设备测试覆盖。
 - 视觉结果以权威 JPG 为基准，API 36 成功帧并排比较通过；`design-qa.md` 为 `final result: passed`，P0/P1/P2 为 0。
 - Lint 为 0 error；Debug、AndroidTest、R8/资源压缩后的固定签名 Release 全部构建成功。Release 只含通知、开机恢复和 AndroidX 非导出动态接收器保护权限，不含 `INTERNET`。
-- Release APK 为 1,728,765 bytes，SHA-256 `5B60C4DD1740F14047EA36C4DFF1A9AB125B1ACDA068BDE9D0F85E1768748C0E`；v2/v3 签名与 V1.0.0 固定 RSA 4096 证书一致。
-- 用户明确要求本轮暂不操作真机，故 Xiaomi Android 14 Debug 回归与正式签名 `1.0.0 → 1.1.0` 实体机覆盖安装标记为“暂缓”，不冒充已通过。需要实体发布时只需补做该最终签字。
+- Release APK 为 1,728,765 bytes，SHA-256 `2968A5D67E5A47BEF8D580C2C59082FFF551680E208133DCC1ED0A448FA64842`；v2/v3 签名与 V1.0.0 固定 RSA 4096 证书一致。
+- Xiaomi `2106118C`（Android 14 / API 34，HyperOS `V816.0.8.0.UKMCNXM`）完成 Debug 全新数据完整路径，以及正式签名 `1.0.0 (1) → 1.1.0 (2)` 无卸载、无清数据覆盖。原目标、9 月 3–5 日 Completion、连续第 3 天、20:00 提醒、通知权限和首次安装时间均保留；旧目标使用迁移默认 `other`。
+- 真机走查发现完成/中断首页的设置入口未与未完成首页统一，修复为右上角齿轮并新增两项回归断言，提交为 `295b1dc`。最终提交构建的签名包已再次覆盖实体机确认，页面语义树中齿轮 1 个、旧“设置 ›”入口 0 个。
+- Xiaomi/HyperOS 阻止 instrumentation 进程启动 Compose `TestHostActivity`，所以实体机只把实际执行的 17 项无界面测试计为自动化通过；完整 46 项 Compose/设备套件分别在 API 26 与 API 36 通过，实体机 UI 由欢迎、创建、动画、设置、重启持久化、记录、深色和横屏人工流程补齐。
 
 ---
 

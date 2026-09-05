@@ -2,7 +2,7 @@
 
 > 记录日期：2026-09-05
 > 发布渠道：本地签名 APK
-> 当前结论：非真机开发与验收完成；实体手机安装和正式覆盖升级按用户要求暂缓
+> 当前结论：开发、自动化、视觉、Xiaomi Android 14 实体机和正式覆盖升级验收全部完成
 
 ## 1. 版本与源码
 
@@ -12,11 +12,12 @@
 | Debug ID | `com.boxsmall.onething.debug` |
 | 版本 | `1.1.0 (2)` |
 | 分支 | `codex/v1.1-brand-experience` |
-| 实现提交 | `31e9d32`（`feat: deliver V1.1 brand experience upgrade`） |
+| 功能实现提交 | `31e9d32`（`feat: deliver V1.1 brand experience upgrade`） |
+| 真机修正与最终 Release 源码 | `295b1dc`（`fix: unify home settings entry after device QA`） |
 | V1 归档标签 | `v1.0.0-rc.1` 继续指向 `65314617803b4a8b95b846963a8389e6afffdd53`，未移动 |
-| 构建时间 | 2026-09-05 12:20:43（Asia/Shanghai） |
+| 构建时间 | 2026-09-05 14:50:40（Asia/Shanghai） |
 
-实现提交包含目标图标、Room schema v2、系统 SplashScreen、4 个 Lottie 资源、Compose 接入、自动化测试、启动页图和视觉 QA 证据。随后仅补充同步文档，不改变 APK 输入代码与资源。
+`31e9d32` 包含目标图标、Room schema v2、系统 SplashScreen、4 个 Lottie 资源、Compose 接入、自动化测试、启动页图和视觉 QA 证据。实体机走查发现完成/中断首页仍保留居中“设置 ›”，与所有首页统一使用右上角齿轮的锁定规则不一致；`295b1dc` 修正并新增回归断言，且在提交前已覆盖安装到实体机验证。最终 Release 由 `295b1dc` 构建；其后的提交只补充发布文档与测试截图。
 
 ## 2. Release 产物
 
@@ -24,13 +25,13 @@
 
 - 路径：`app/build/outputs/apk/release/app-release.apk`
 - 大小：1,728,765 bytes
-- SHA-256：`5B60C4DD1740F14047EA36C4DFF1A9AB125B1ACDA068BDE9D0F85E1768748C0E`
+- SHA-256：`2968A5D67E5A47BEF8D580C2C59082FFF551680E208133DCC1ED0A448FA64842`
 
 ### V4 侧车
 
 - 路径：`app/build/outputs/apk/release/app-release.apk.idsig`
 - 大小：23,116 bytes
-- SHA-256：`53D59B2D09E7CB501D59F2261FC1B92ED1456D926BB6E78A6A9027985AD90CF5`
+- SHA-256：`F126DED68F09FF957E865944AB15293DFB6D728B77CCC633DBAD8C5B381EC0E7`
 
 ### 体积变化
 
@@ -64,14 +65,16 @@
 | 门禁 | 结果 |
 | --- | --- |
 | JVM 单元测试 | 37/37 通过 |
-| API 26 Android 设备测试 | 45/45 通过，0 failure / 0 error / 0 skipped |
-| API 36 Android 设备测试 | 45/45 通过，0 failure / 0 error / 0 skipped |
+| API 26 Android 设备测试 | 46/46 通过，0 failure |
+| API 36 Android 设备测试 | 46/46 通过，0 failure |
+| Xiaomi Android 14 实体机无界面自动化 | 17/17 通过；覆盖 Room 迁移、数据/图标持久化、提醒、Lottie、完成顺序和启动配置 |
+| Xiaomi Android 14 实体机人工主流程 | 通过；Debug 全新数据完整流程 + 正式版无清数据覆盖升级 + 冷/热启动、深色系统、横屏 |
 | Lint Debug | 0 error；10 条仅为 SDK/依赖新版本提示 |
 | Debug APK | 构建成功 |
 | AndroidTest APK | 构建成功 |
 | Release APK | R8、资源压缩、Lint Vital 与固定签名构建成功 |
 
-设备测试覆盖 Room 1→2 真实迁移、图标持久化、创建与设置选择、历史展示、大字体和 600dp、动画资源解析、单次触发、数据先保存、返回中断、进程重建不重播、资源失败降级、移除动画降级、TalkBack 单次语义、提醒与通知路由。
+设备测试覆盖 Room 1→2 真实迁移、图标持久化、创建与设置选择、历史展示、大字体和 600dp、动画资源解析、单次触发、数据先保存、返回中断、进程重建不重播、资源失败降级、移除动画降级、TalkBack 单次语义、提醒与通知路由。Xiaomi/HyperOS 会阻止 instrumentation 进程启动 `TestHostActivity`，因此实体机没有冒充执行 46 项 Compose 全量套件；改由 17 项不依赖测试 Activity 的自动化加完整人工 UI 路径覆盖，完整 46 项仍在 API 26/36 各执行一次。
 
 ## 6. 启动页与视觉验收
 
@@ -93,14 +96,15 @@
 
 4 个文件均为 1080×1080、60fps、108 帧（1.8 秒）、不循环、无外部图片、无文字图层并通过 Lottie 实际解析测试，远低于单文件 200KB 建议上限。
 
-## 8. 暂缓项目
+## 8. 实体机验收
 
-根据用户明确要求，本轮不连接或操作实体手机。因此以下两项不是本地代码缺陷，也没有被描述为已完成：
-
-- Xiaomi Android 14 Debug 实体机回归；
-- 使用 V1.0.0 同一正式签名在实体手机执行 `1.0.0 → 1.1.0` 覆盖安装并人工确认原目标、Completion、提醒和厂商后台权限。
-
-上述路径已有 Room 迁移、数据库重开、进程重建、提醒路由和双 API 模拟器自动化证据；需要发布到实体手机时，再执行一次不清数据的最终签字即可。
+- 设备：Xiaomi `2106118C`，Android 14 / API 34，HyperOS `V816.0.8.0.UKMCNXM`，1080×2400、440dpi。
+- 独立 Debug 包从全新数据完成欢迎、8 图标创建、提醒授权、未完成首页、完成动画、已完成首页、设置改图标、杀进程重开和记录页；动画中间帧与完成状态均已留存。
+- 正式包使用同一证书由 `1.0.0 (1)` 直接覆盖到 `1.1.0 (2)`，未卸载、未清数据；首次安装时间和数据目录 inode 不变。
+- 覆盖后原目标“吃饭”、9 月 3–5 日三条 Completion、“连续第 3 天”、每天 20:00 提醒和通知权限均保留；旧目标按迁移规则使用“其他”图标，下一次 Alarm 已登记到 9 月 6 日 20:00。
+- 冷启动 432ms，热启动重新投递 7ms；深色系统下应用仍按产品要求固定浅色主题，横屏保持 `MainActivity` 前台且内容可滚动。测试后已恢复手机原有夜间模式和旋转设置。
+- 真机走查发现并关闭 1 项一致性缺陷：完成/中断首页的居中“设置 ›”改为统一右上角齿轮。修复提交 `295b1dc` 在提交前后均用正式覆盖包验证，最终页面语义树中齿轮 1 个、旧入口 0 个。
+- 最终签名 APK 已留在实体机，原正式数据未被测试包修改。真机截图目录与说明见 `design/qa/v1.1/README.md`。
 
 ## 9. 标准复核命令
 
