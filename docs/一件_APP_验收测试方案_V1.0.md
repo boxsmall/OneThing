@@ -580,6 +580,19 @@ Android 版本：
 - 已使用独立恢复码实际解密并对两个源文件逐项进行 SHA-256 比较，结果一致；压缩包、恢复码和校验清单均未进入 Git。
 - 该副本仍与原始签名材料位于同一台电脑和磁盘，不能视为离线备份；取得独立介质后仍须完成异盘复制和再次读取校验。
 
+## 14.8 2026-09-05 V1.1 品牌体验升级验收记录
+
+- 测试版本：`1.1.0 (2)`；Application ID：`com.boxsmall.onething`；实现提交：`31e9d32`；分支：`codex/v1.1-brand-experience`。
+- JVM：37/37 通过。API 26：45/45 通过。API 36：45/45 通过。两套设备结果均为 0 failure、0 error、0 skipped。
+- Room 迁移从真实 v1 schema 建库后升级到 v2，验证原目标、开始日、active slot、Completion 和 `other` 默认图标；另以文件数据库关闭重开验证用户选择图标不丢失。
+- Compose UI 覆盖默认/选择图标、选中语义、设置修改、历史展示、320dp/600dp、1.5×/2.0×字体；完成反馈覆盖单次触发、数据先保存、正常结束、返回中断、进程重建不补播、资源失败和移除动画降级、TalkBack 单次完整朗读。
+- 4 个 Lottie JSON 均通过实际解析与结构约束：1080×1080、60fps、1.8 秒、不循环、无外部图片、无文字层且小于 200KB。
+- API 26 和 API 36 均完成 Debug 冷启动、热启动、深色系统主题与旋转冒烟；`MainActivity` 始终有效，无独立 `SplashActivity`。通知打开返回首页/创建页由设备测试覆盖。
+- 视觉结果以权威 JPG 为基准，API 36 成功帧并排比较通过；`design-qa.md` 为 `final result: passed`，P0/P1/P2 为 0。
+- Lint 为 0 error；Debug、AndroidTest、R8/资源压缩后的固定签名 Release 全部构建成功。Release 只含通知、开机恢复和 AndroidX 非导出动态接收器保护权限，不含 `INTERNET`。
+- Release APK 为 1,728,765 bytes，SHA-256 `5B60C4DD1740F14047EA36C4DFF1A9AB125B1ACDA068BDE9D0F85E1768748C0E`；v2/v3 签名与 V1.0.0 固定 RSA 4096 证书一致。
+- 用户明确要求本轮暂不操作真机，故 Xiaomi Android 14 Debug 回归与正式签名 `1.0.0 → 1.1.0` 实体机覆盖安装标记为“暂缓”，不冒充已通过。需要实体发布时只需补做该最终签字。
+
 ---
 
 # 15. 最终冒烟路径

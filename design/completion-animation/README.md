@@ -15,4 +15,4 @@
 
 ## 当前状态
 
-权威 JPG 已确认目标效果，但当前 V1 仍使用已经开发和测试的 Compose 完成反馈层。接入时只采用权威稿的完成动画核心，不恢复稿中旧版底部导航或改变现行首页信息架构；同时应核对规范第 12 节差异，并同步更新开发、测试和发布文档。
+V1.1 已按权威 JPG 接入 Logo 点亮完成动画，只采用权威稿的动画核心，没有恢复旧版底部导航或改变现行首页信息架构。Android 运行时资源位于 `app/src/main/res/raw/complete_*.json`，生成脚本为 `tools/generate_completion_lottie.mjs`；Compose 负责动态文案、业务状态、无障碍和降级路径。视觉验收证据见根目录 `design-qa.md` 与 `design/qa/v1.1/`。

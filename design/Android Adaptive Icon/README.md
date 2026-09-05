@@ -1,7 +1,7 @@
 # 一件 / OneThing — Android 正式图标资源包（A1 · 卡通目标图标版）
 
-> 工程接入状态：2026-09-02 已完成 A1 Launcher Icon 接入。
-> V1 使用限制：只使用品牌 `1.`，8 个目标分类图标保留为 V2 候选，不进入 V1 产品界面。
+> 工程接入状态：2026-09-02 已完成 A1 Launcher Icon；2026-09-05 已在 V1.1 接入 8 个目标分类图标。
+> V1.1 使用口径：完成动画固定使用品牌 `1.`；目标分类图标由用户明确选择并持久化，不做文字猜测。
 
 ## 说明
 本资源包基于已确认的 A1 品牌 Logo 方案保留启动图标体系，
@@ -59,7 +59,7 @@ UI 的“待完成状态黄”仍为 `#F5B838`，它是状态色，不与品牌�
 - `android/app/src/main/res/drawable-xxhdpi/`
 - `android/app/src/main/res/drawable-xxxhdpi/`
 
-以下目标分类资源仅为 V2 候选，V1 不复制到 `app/src/main/res`：
+以下目标分类 Vector Drawable 已复制到 `app/src/main/res/drawable` 并用于 V1.1：
 - `@drawable/ic_goal_walk`
 - `@drawable/ic_goal_read`
 - `@drawable/ic_goal_sleep`
@@ -70,8 +70,8 @@ UI 的“待完成状态黄”仍为 `#F5B838`，它是状态色，不与品牌�
 - `@drawable/ic_goal_other`
 
 ## 使用建议
-- V1 首页、创建页和记录页统一使用品牌 `1.`，不出现目标分类选择。
-- 将来确认 V2 分类能力后，卡通目标图标可用于目标选择页和分类展示。
+- V1.1 创建页提供 8 项明确选择，默认 `other`；设置页可修改当前目标图标。
+- 首页、记录页和历史卡片显示持久化图标；完成动画仍固定使用品牌 `1.`。
 - 此版为 **带背景插画图标**，更适合内容模块图标，不建议当系统 launcher icon 使用。
 - 如需透明背景版本，建议后续基于同一风格继续单独出一套。
 
@@ -84,15 +84,23 @@ UI 的“待完成状态黄”仍为 `#F5B838`，它是状态色，不与品牌�
 
 ## 工程接入清单
 
-当前 Android 工程只接入以下品牌资源：
+当前 Android 工程接入以下品牌资源：
 
 - `drawable/ic_launcher_foreground.xml`
 - `drawable/ic_launcher_monochrome.xml`
 - `mipmap-anydpi/ic_launcher.xml`
 - `mipmap-anydpi/ic_launcher_round.xml`
 - `mipmap-anydpi-v33/` monochrome 声明
+- `drawable/ic_goal_walk.xml`
+- `drawable/ic_goal_read.xml`
+- `drawable/ic_goal_sleep.xml`
+- `drawable/ic_goal_water.xml`
+- `drawable/ic_goal_stretch.xml`
+- `drawable/ic_goal_study.xml`
+- `drawable/ic_goal_medicine.xml`
+- `drawable/ic_goal_other.xml`
 
-设计包中的密度 PNG 和 8 类目标 PNG 不直接复制进当前 `app` 模块，避免与 minSdk 26 的 Adaptive Icon 资源以及 V1 产品边界产生重复。
+设计包中的多密度目标 PNG 不复制进 `app` 模块；运行时统一使用 Vector Drawable，避免 APK 重复资源。
 
 ## 预览
 - `goal-icons/preview/goal_icons_preview_sheet.png`

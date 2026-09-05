@@ -1,9 +1,9 @@
 # 「一件」APP V1 开发决策基线
 
-> 版本：V1.1
-> 锁定日期：2026-09-02
-> 状态：开发前已确认
-> 适用范围：V1 Android 本地发布版
+> 版本：V1.0 基线 + V1.1 修订
+> 锁定日期：2026-09-02；V1.1 修订：2026-09-05
+> 状态：V1.1 已确认并完成非真机开发验收
+> 适用范围：V1/V1.1 Android 本地发布版
 
 ## 1. 文档地位
 
@@ -16,8 +16,8 @@
 | 应用名称 | 一件 |
 | 工程名称 | OneThing |
 | applicationId | `com.boxsmall.onething` |
-| versionName | `1.0.0` |
-| versionCode | `1` |
+| versionName | 当前 `1.1.0`；V1 RC 为 `1.0.0` |
+| versionCode | 当前 `2`；V1 RC 为 `1` |
 | minSdk | 26 |
 | compileSdk | 36 |
 | targetSdk | 36 |
@@ -120,7 +120,7 @@ V1 仅提供浅色主题。系统处于深色模式时仍保持浅色页面，�
 - Release 产物必须使用固定 upload/release keystore 签名，密钥不得提交 Git。
 - 每个发布包记录版本号、Git commit、构建时间、APK SHA-256 和完整验收结果。
 - 仓库采用 Apache License 2.0，完整条款见根目录 `LICENSE`。
-- `design/Android Adaptive Icon/` 中的 A1 资源被确认为 Android 品牌源稿；工程使用修正至 `66×66dp` 安全区的 VectorDrawable foreground/background，并提供 Android 13+ monochrome。资源包内 8 类卡通目标图标只作为 V2 候选，不改变 V1 固定品牌图标规则。
+- `design/Android Adaptive Icon/` 中的 A1 资源被确认为 Android 品牌源稿；工程使用修正至 `66×66dp` 安全区的 VectorDrawable foreground/background，并提供 Android 13+ monochrome。V1.1 已启用资源包内 8 类目标图标，用于创建时明确选择、设置修改以及首页、记录页和历史页展示；完成动画继续固定使用 A1 `1.` Logo。
 
 ## 11. 关于与隐私
 
@@ -149,3 +149,15 @@ V1 仅提供浅色主题。系统处于深色模式时仍保持浅色页面，�
 - Release APK 不包含 `INTERNET`、精确闹钟或无关敏感权限。
 - APK 使用固定密钥签名并产出 SHA-256 校验值。
 - 仓库不包含 keystore、密码、私密配置或用户数据。
+
+## 14. V1.1 品牌体验升级修订（2026-09-05）
+
+本节只修订与 V1.1 直接相关的口径；单目标、一天一次、完全不支持文字记录、本地数据、无账号/云同步/广告/Analytics 和本地签名发布等 V1 边界继续有效。
+
+- 目标图标从“固定品牌图形”修订为 8 个用户明确选择的分类图标；默认及未知值均为 `other`，不根据目标文字自动猜测。首页、记录、设置和历史使用持久化图标；完成动画仍固定使用 A1 `1.` Logo。
+- Room schema 升为 v2，新增 `iconKey TEXT NOT NULL DEFAULT 'other'`，必须通过显式 1→2 非破坏迁移，禁止 destructive migration。
+- 启动页统一使用 AndroidX SplashScreen、暖白背景和 A1 Logo；只给 `MainActivity` 配置 Starting Theme，不创建第二个 Activity，不人为延长冷启动。
+- 完成反馈升级为 1.8 秒、不循环的 Logo 点亮动画；Lottie 只承载图形层，动态天数、提示、业务状态、导航和语义继续由 Compose 负责。基础与 3/7/30 天资源失败时必须降级，不得阻断已写入的 Completion。
+- 数据保存并可读后才触发动效；动画返回、切后台或进程重建均以数据库完成态为准，不重复写入或补播。
+- `core-splashscreen 1.2.0`、`lottie-compose 6.7.1` 为 V1.1 锁定版本；版本号为 `1.1.0 (2)`。
+- 实体手机测试可以按发布轮次单独执行，但任何未执行的真机或正式覆盖安装必须明确标为暂缓，不能用模拟器结果代替。
