@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boxsmall.onething.domain.GoalSnapshot
+import com.boxsmall.onething.domain.GoalIconKey
 import com.boxsmall.onething.ui.theme.OneThingTheme
 import java.time.LocalDate
 import org.junit.Assert.assertTrue
@@ -78,11 +79,13 @@ class AccessibilityLayoutTest {
                 AdaptiveFrame(width = 320.dp, height = 480.dp, fontScale = 2f) {
                     SettingsScreen(
                         currentGoalName = "每天步行二十分钟",
+                        currentGoalIcon = com.boxsmall.onething.domain.GoalIconKey.WALK,
                         reminderEnabled = true,
                         reminderHour = 20,
                         reminderMinute = 0,
                         busy = false,
                         onRenameGoal = {},
+                        onGoalIconChange = {},
                         onReminderChange = { _, _, _ -> },
                         onHistory = {},
                         onAbout = {},
@@ -105,6 +108,33 @@ class AccessibilityLayoutTest {
     }
 
     @Test
+    fun allGoalIconsRemainVisibleAt600DpWithLargeText() {
+        composeRule.setContent {
+            OneThingTheme {
+                WideAdaptiveFrame(width = 600.dp, height = 960.dp) {
+                    CompositionLocalProvider(
+                        LocalDensity provides Density(LocalDensity.current.density, 2f),
+                    ) {
+                        CreateGoalScreen(
+                            busy = false,
+                            hasHistory = false,
+                            initialReminderEnabled = false,
+                            initialReminderHour = 20,
+                            initialReminderMinute = 0,
+                            onCreate = { _, _, _, _, _ -> },
+                            onHistory = {},
+                        )
+                    }
+                }
+            }
+        }
+
+        GoalIconKey.entries.forEach { icon ->
+            composeRule.onNodeWithTag("goal-icon-${icon.storageValue}").assertIsDisplayed()
+        }
+    }
+
+    @Test
     fun createControlsExposePurposeAndState() {
         composeRule.setContent {
             OneThingTheme {
@@ -114,7 +144,7 @@ class AccessibilityLayoutTest {
                     initialReminderEnabled = true,
                     initialReminderHour = 20,
                     initialReminderMinute = 0,
-                    onCreate = { _, _, _, _ -> },
+                    onCreate = { _, _, _, _, _ -> },
                     onHistory = {},
                 )
             }
@@ -193,11 +223,13 @@ class AccessibilityLayoutTest {
                 } else {
                     SettingsScreen(
                         currentGoalName = "走路 20 分钟",
+                        currentGoalIcon = com.boxsmall.onething.domain.GoalIconKey.WALK,
                         reminderEnabled = true,
                         reminderHour = 20,
                         reminderMinute = 0,
                         busy = false,
                         onRenameGoal = {},
+                        onGoalIconChange = {},
                         onReminderChange = { _, _, _ -> },
                         onHistory = {},
                         onAbout = { showAbout = true },

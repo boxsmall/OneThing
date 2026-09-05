@@ -26,6 +26,9 @@ interface GoalDao {
     @Query("UPDATE goals SET name = :name WHERE activeSlot = 1")
     suspend fun renameActive(name: String): Int
 
+    @Query("UPDATE goals SET iconKey = :iconKey WHERE activeSlot = 1")
+    suspend fun updateActiveIcon(iconKey: String): Int
+
     @Query(
         """
         UPDATE goals

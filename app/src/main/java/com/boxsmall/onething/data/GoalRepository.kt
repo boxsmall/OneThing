@@ -8,6 +8,7 @@ import com.boxsmall.onething.data.local.GoalDao
 import com.boxsmall.onething.data.local.GoalEntity
 import com.boxsmall.onething.data.local.OneThingDatabase
 import com.boxsmall.onething.domain.GoalSnapshot
+import com.boxsmall.onething.domain.GoalIconKey
 import com.boxsmall.onething.domain.GoalNamePolicy
 import java.time.LocalDate
 import kotlinx.coroutines.flow.Flow
@@ -42,9 +43,12 @@ class GoalRepository(
         }
     }
 
-    suspend fun createGoal(rawName: String): Long = database.withTransaction {
+    suspend fun createGoal(
+        rawName: String,
+        iconKey: GoalIconKey = GoalIconKey.OTHER,
+    ): Long = database.withTransaction {
         check(goalDao.getActive() == null) { "An active goal already exists" }
-        goalDao.insert(newGoal(rawName))
+        goalDao.insert(newGoal(rawName, iconKey = iconKey))
     }
 
     suspend fun completeToday(): Boolean = database.withTransaction {
@@ -68,13 +72,21 @@ class GoalRepository(
         goalDao.renameActive(normalizedName) == 1
     }
 
-    suspend fun replaceActiveGoal(rawName: String, completeNewGoalToday: Boolean = false): Long =
+    suspend fun updateActiveGoalIcon(iconKey: GoalIconKey): Boolean = database.withTransaction {
+        goalDao.updateActiveIcon(iconKey.storageValue) == 1
+    }
+
+    suspend fun replaceActiveGoal(
+        rawName: String,
+        completeNewGoalToday: Boolean = false,
+        iconKey: GoalIconKey = GoalIconKey.OTHER,
+    ): Long =
         database.withTransaction {
             val today = dateProvider.today()
             goalDao.getActive()?.let { current ->
                 check(goalDao.end(current.id, today.toEpochDay()) == 1)
             }
-            val newGoalId = goalDao.insert(newGoal(rawName, today))
+            val newGoalId = goalDao.insert(newGoal(rawName, today, iconKey))
             if (completeNewGoalToday) {
                 completionDao.insert(
                     CompletionEntity(
@@ -87,14 +99,23 @@ class GoalRepository(
             newGoalId
         }
 
-    private fun newGoal(rawName: String, today: LocalDate = dateProvider.today()): GoalEntity {
+    private fun newGoal(
+        rawName: String,
+        today: LocalDate = dateProvider.today(),
+        iconKey: GoalIconKey = GoalIconKey.OTHER,
+    ): GoalEntity {
         val normalizedName = GoalNamePolicy.normalize(rawName)
-        return GoalEntity(name = normalizedName, startEpochDay = today.toEpochDay())
+        return GoalEntity(
+            name = normalizedName,
+            iconKey = iconKey.storageValue,
+            startEpochDay = today.toEpochDay(),
+        )
     }
 
     private fun GoalEntity.toSnapshot(dates: List<Long>): GoalSnapshot = GoalSnapshot(
         id = id,
         name = name,
+        iconKey = resolvedIconKey,
         startDate = LocalDate.ofEpochDay(startEpochDay),
         endDate = endEpochDay?.let(LocalDate::ofEpochDay),
         completionDates = dates.mapTo(mutableSetOf(), LocalDate::ofEpochDay),

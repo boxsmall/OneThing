@@ -6,7 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.boxsmall.onething.AppContainer
 import com.boxsmall.onething.data.settings.AppSettings
 import com.boxsmall.onething.domain.GoalSnapshot
+import com.boxsmall.onething.domain.GoalIconKey
+import com.boxsmall.onething.domain.GoalStatsCalculator
 import java.time.LocalDate
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +25,7 @@ data class MainUiState(
     val history: List<GoalSnapshot> = emptyList(),
     val operationInProgress: Boolean = false,
     val showCelebration: Boolean = false,
+    val celebrationStreak: Int? = null,
     val message: String? = null,
 )
 
@@ -44,6 +49,7 @@ class MainViewModel(
             history = history,
             operationInProgress = transient.operationInProgress,
             showCelebration = transient.showCelebration,
+            celebrationStreak = transient.celebrationStreak,
             message = transient.message,
         )
     }.stateIn(
@@ -63,6 +69,7 @@ class MainViewModel(
 
     fun createGoal(
         name: String,
+        iconKey: GoalIconKey,
         reminderEnabled: Boolean,
         reminderHour: Int,
         reminderMinute: Int,
@@ -72,12 +79,22 @@ class MainViewModel(
             hour = reminderHour,
             minute = reminderMinute,
         )
-        container.goalRepository.createGoal(name)
+        container.goalRepository.createGoal(name, iconKey)
     }
 
     fun completeToday() = launchOperation {
         if (container.goalRepository.completeToday()) {
-            transientState.value = TransientState(showCelebration = true)
+            val today = container.dateProvider.today()
+            val completedGoal = container.goalRepository.observeActiveGoal()
+                .filterNotNull()
+                .first { today in it.completionDates }
+            transientState.value = TransientState(
+                showCelebration = true,
+                celebrationStreak = GoalStatsCalculator.calculate(
+                    completedGoal.completionDates,
+                    today,
+                ).currentStreak,
+            )
         }
     }
 
@@ -92,6 +109,10 @@ class MainViewModel(
 
     fun renameActiveGoal(name: String) = launchOperation {
         check(container.goalRepository.renameActiveGoal(name)) { "当前目标不存在" }
+    }
+
+    fun updateActiveGoalIcon(iconKey: GoalIconKey) = launchOperation {
+        check(container.goalRepository.updateActiveGoalIcon(iconKey)) { "当前目标不存在" }
     }
 
     fun updateReminder(enabled: Boolean, hour: Int, minute: Int) = launchOperation {
@@ -123,6 +144,7 @@ class MainViewModel(
     private data class TransientState(
         val operationInProgress: Boolean = false,
         val showCelebration: Boolean = false,
+        val celebrationStreak: Int? = null,
         val message: String? = null,
     )
 

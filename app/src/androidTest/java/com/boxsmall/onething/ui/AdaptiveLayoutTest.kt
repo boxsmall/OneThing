@@ -47,7 +47,7 @@ class AdaptiveLayoutTest {
                             initialReminderEnabled = true,
                             initialReminderHour = 20,
                             initialReminderMinute = 0,
-                            onCreate = { _, _, _, _ -> },
+                            onCreate = { _, _, _, _, _ -> },
                             onHistory = {},
                         )
                     }
@@ -106,11 +106,13 @@ class AdaptiveLayoutTest {
                 AdaptiveFrame(width = 360.dp, height = 320.dp, fontScale = 1.3f) {
                     SettingsScreen(
                         currentGoalName = "走路 20 分钟",
+                        currentGoalIcon = com.boxsmall.onething.domain.GoalIconKey.WALK,
                         reminderEnabled = true,
                         reminderHour = 20,
                         reminderMinute = 0,
                         busy = false,
                         onRenameGoal = {},
+                        onGoalIconChange = {},
                         onReminderChange = { _, _, _ -> },
                         onHistory = {},
                         onAbout = {},
@@ -205,7 +207,7 @@ class AdaptiveLayoutTest {
         composeRule.setContent {
             OneThingTheme {
                 AdaptiveFrame(width = 320.dp, height = 480.dp, fontScale = 1.5f) {
-                    CompletionOverlay(currentStreak = 8, onDismiss = {})
+                    CompletionOverlay(currentStreak = 8, forceFallback = true, onDismiss = {})
                 }
             }
         }

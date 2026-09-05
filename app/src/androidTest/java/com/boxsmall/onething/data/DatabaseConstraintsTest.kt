@@ -10,6 +10,7 @@ import com.boxsmall.onething.data.local.CompletionEntity
 import com.boxsmall.onething.data.local.GoalEntity
 import com.boxsmall.onething.data.local.OneThingDatabase
 import com.boxsmall.onething.domain.GoalNamePolicy
+import com.boxsmall.onething.domain.GoalIconKey
 import java.time.LocalDate
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -105,6 +106,25 @@ class DatabaseConstraintsTest {
         assertEquals("每天读书 📚", goal?.name)
         assertEquals(today.toEpochDay(), goal?.startEpochDay)
         assertEquals(GoalEntity.ACTIVE_SLOT, goal?.activeSlot)
+        assertEquals(listOf(today.toEpochDay()), database.completionDao().getDates(goalId))
+    }
+
+    @Test
+    fun changingActiveGoalIconKeepsIdentityAndCompletions() = runBlocking {
+        val repository = GoalRepository(
+            database = database,
+            goalDao = database.goalDao(),
+            completionDao = database.completionDao(),
+            dateProvider = DateProvider { today },
+        )
+        val goalId = repository.createGoal("每天走路")
+        repository.completeToday()
+
+        assertEquals(true, repository.updateActiveGoalIcon(GoalIconKey.WALK))
+
+        val goal = database.goalDao().getById(goalId)
+        assertEquals(GoalIconKey.WALK.storageValue, goal?.iconKey)
+        assertEquals(goalId, goal?.id)
         assertEquals(listOf(today.toEpochDay()), database.completionDao().getDates(goalId))
     }
 

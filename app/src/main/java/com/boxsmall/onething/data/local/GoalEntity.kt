@@ -3,6 +3,7 @@ package com.boxsmall.onething.data.local
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.boxsmall.onething.domain.GoalIconKey
 import com.boxsmall.onething.domain.GoalNamePolicy
 
 @Entity(
@@ -15,6 +16,7 @@ data class GoalEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val name: String,
+    val iconKey: String = GoalIconKey.OTHER.storageValue,
     val startEpochDay: Long,
     val endEpochDay: Long? = null,
     val activeSlot: Int? = ACTIVE_SLOT,
@@ -28,6 +30,8 @@ data class GoalEntity(
     }
 
     val isActive: Boolean get() = activeSlot == ACTIVE_SLOT
+
+    val resolvedIconKey: GoalIconKey get() = GoalIconKey.fromStorage(iconKey)
 
     companion object {
         const val ACTIVE_SLOT = 1

@@ -100,6 +100,7 @@ import com.boxsmall.onething.data.local.GoalEntity
 import com.boxsmall.onething.BuildConfig
 import com.boxsmall.onething.domain.GoalProgressCalculator
 import com.boxsmall.onething.domain.GoalProgressKind
+import com.boxsmall.onething.domain.GoalIconKey
 import com.boxsmall.onething.domain.GoalSnapshot
 import com.boxsmall.onething.domain.GoalStatsCalculator
 import com.boxsmall.onething.domain.GoalNamePolicy
@@ -256,11 +257,13 @@ fun OneThingApp(
                 )
                 page == AppPage.SETTINGS -> SettingsScreen(
                     currentGoalName = state.activeGoal?.name.orEmpty(),
+                    currentGoalIcon = state.activeGoal?.iconKey ?: GoalIconKey.OTHER,
                     reminderEnabled = state.settings?.reminderEnabled ?: true,
                     reminderHour = state.settings?.reminderHour ?: 20,
                     reminderMinute = state.settings?.reminderMinute ?: 0,
                     busy = state.operationInProgress,
                     onRenameGoal = viewModel::renameActiveGoal,
+                    onGoalIconChange = viewModel::updateActiveGoalIcon,
                     onReminderChange = viewModel::updateReminder,
                     onHistory = {
                         historyReturnPage = AppPage.SETTINGS
@@ -286,7 +289,7 @@ fun OneThingApp(
             }
 
             if (state.showCelebration) {
-                val streak = state.activeGoal?.let { goal ->
+                val streak = state.celebrationStreak ?: state.activeGoal?.let { goal ->
                     GoalStatsCalculator.calculate(goal.completionDates, state.currentDate).currentStreak
                 } ?: 1
                 CompletionOverlay(
@@ -454,10 +457,11 @@ internal fun CreateGoalScreen(
     initialReminderEnabled: Boolean,
     initialReminderHour: Int,
     initialReminderMinute: Int,
-    onCreate: (String, Boolean, Int, Int) -> Unit,
+    onCreate: (String, GoalIconKey, Boolean, Int, Int) -> Unit,
     onHistory: () -> Unit,
 ) {
     var name by rememberSaveable { mutableStateOf("") }
+    var selectedIconValue by rememberSaveable { mutableStateOf(GoalIconKey.OTHER.storageValue) }
     var reminderEnabled by rememberSaveable { mutableStateOf(initialReminderEnabled) }
     var reminderHour by rememberSaveable { mutableIntStateOf(initialReminderHour) }
     var reminderMinute by rememberSaveable { mutableIntStateOf(initialReminderMinute) }
@@ -466,6 +470,7 @@ internal fun CreateGoalScreen(
     val focusManager = LocalFocusManager.current
     val count = GoalNamePolicy.visibleLength(normalized)
     val canSubmit = normalized.isNotBlank() && count <= GoalEntity.MAX_NAME_LENGTH && !busy
+    val selectedIcon = GoalIconKey.fromStorage(selectedIconValue)
 
     BoxWithConstraints(
         modifier = Modifier
@@ -509,6 +514,21 @@ internal fun CreateGoalScreen(
                 supportingText = { Text("$count / ${GoalEntity.MAX_NAME_LENGTH}") },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 shape = RoundedCornerShape(16.dp),
+            )
+            Spacer(Modifier.height(18.dp))
+            Text(
+                "选择一个图标",
+                modifier = Modifier.fillMaxWidth(),
+                color = Ink,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Spacer(Modifier.height(10.dp))
+            GoalIconPicker(
+                selected = selectedIcon,
+                onSelect = { selectedIconValue = it.storageValue },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("goal-icon-picker"),
             )
             Spacer(Modifier.height(18.dp))
             Row(
@@ -580,7 +600,7 @@ internal fun CreateGoalScreen(
                 modifier = Modifier.testTag("create-submit"),
                 onClick = {
                     focusManager.clearFocus()
-                    onCreate(normalized, reminderEnabled, reminderHour, reminderMinute)
+                    onCreate(normalized, selectedIcon, reminderEnabled, reminderHour, reminderMinute)
                 },
             )
             if (hasHistory) {
@@ -676,6 +696,8 @@ internal fun HomeScreen(
                 interrupted -> {
                     val durationDays = ChronoUnit.DAYS.between(goal.startDate, today).toInt() + 1
                     Spacer(Modifier.height(8.dp))
+                    GoalIconBadge(goal.iconKey, size = 58.dp)
+                    Spacer(Modifier.height(16.dp))
                     Text(
                         if (progress.gapDays == 1) "昨天没有完成" else "有几天没有继续了",
                         modifier = Modifier.fillMaxWidth(),
@@ -711,6 +733,8 @@ internal fun HomeScreen(
 
                 completedToday -> {
                     Text("今天", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Spacer(Modifier.height(18.dp))
+                    GoalIconBadge(goal.iconKey, completed = true, size = 58.dp)
                     Spacer(Modifier.height(26.dp))
                     Text(
                         goal.name,
@@ -752,6 +776,8 @@ internal fun HomeScreen(
                 else -> {
                     Spacer(Modifier.height(8.dp))
                     Text("今天", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Spacer(Modifier.height(18.dp))
+                    GoalIconBadge(goal.iconKey, size = 58.dp)
                     Spacer(Modifier.height(24.dp))
                     Text(
                         goal.name,
@@ -887,7 +913,11 @@ private fun RecordAction(onClick: () -> Unit) {
 }
 
 @Composable
-internal fun CompletionOverlay(currentStreak: Int, onDismiss: () -> Unit) {
+internal fun CompletionFallbackOverlay(
+    currentStreak: Int,
+    reducedMotion: Boolean = false,
+    onDismiss: () -> Unit,
+) {
     var visible by remember { mutableStateOf(false) }
     var dismissalRequested by remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
@@ -915,14 +945,14 @@ internal fun CompletionOverlay(currentStreak: Int, onDismiss: () -> Unit) {
     LaunchedEffect(Unit) {
         visible = true
         hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-        delay(960)
+        delay(if (reducedMotion) 360 else 960)
         dismissalRequested = true
     }
 
     LaunchedEffect(dismissalRequested) {
         if (dismissalRequested) {
             visible = false
-            delay(240)
+            delay(if (reducedMotion) 120 else 240)
             onDismiss()
         }
     }
@@ -985,11 +1015,13 @@ internal fun CompletionOverlay(currentStreak: Int, onDismiss: () -> Unit) {
 @Composable
 internal fun SettingsScreen(
     currentGoalName: String,
+    currentGoalIcon: GoalIconKey,
     reminderEnabled: Boolean,
     reminderHour: Int,
     reminderMinute: Int,
     busy: Boolean,
     onRenameGoal: (String) -> Unit,
+    onGoalIconChange: (GoalIconKey) -> Unit,
     onReminderChange: (Boolean, Int, Int) -> Unit,
     onHistory: () -> Unit,
     onAbout: () -> Unit,
@@ -999,6 +1031,7 @@ internal fun SettingsScreen(
     onOpenSystemSettings: () -> Unit = {},
 ) {
     var showRenameDialog by rememberSaveable { mutableStateOf(false) }
+    var showIconDialog by rememberSaveable { mutableStateOf(false) }
     var showTimeDialog by rememberSaveable { mutableStateOf(false) }
     var showReminderReliabilityDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -1020,6 +1053,21 @@ internal fun SettingsScreen(
                 enabled = !busy,
                 onClick = { showRenameDialog = true },
             )
+            }
+            item {
+                SettingsCard(
+                    title = "目标图标",
+                    value = currentGoalIcon.presentation().label,
+                    enabled = !busy,
+                    onClick = { showIconDialog = true },
+                    leading = {
+                        GoalIconBadge(
+                            iconKey = currentGoalIcon,
+                            size = 38.dp,
+                            modifier = Modifier.clearAndSetSemantics {},
+                        )
+                    },
+                )
             }
             item {
                 SettingsCard(
@@ -1093,6 +1141,18 @@ internal fun SettingsScreen(
                 showRenameDialog = false
             },
             onDismiss = { showRenameDialog = false },
+        )
+    }
+
+    if (showIconDialog) {
+        GoalIconDialog(
+            currentIcon = currentGoalIcon,
+            busy = busy,
+            onConfirm = { iconKey ->
+                onGoalIconChange(iconKey)
+                showIconDialog = false
+            },
+            onDismiss = { showIconDialog = false },
         )
     }
 
@@ -1283,6 +1343,38 @@ private fun RenameGoalDialog(
     )
 }
 
+@Composable
+private fun GoalIconDialog(
+    currentIcon: GoalIconKey,
+    busy: Boolean,
+    onConfirm: (GoalIconKey) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var selectedValue by rememberSaveable(currentIcon) { mutableStateOf(currentIcon.storageValue) }
+    val selected = GoalIconKey.fromStorage(selectedValue)
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("修改目标图标") },
+        text = {
+            GoalIconPicker(
+                selected = selected,
+                onSelect = { selectedValue = it.storageValue },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("settings-goal-icon-picker"),
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onConfirm(selected) },
+                enabled = !busy && selected != currentIcon,
+            ) { Text("保存") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } },
+        containerColor = Paper,
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReminderTimeDialog(
@@ -1330,6 +1422,20 @@ internal fun RecordScreen(goal: GoalSnapshot, today: LocalDate, onBack: () -> Un
         item { ScreenHeader("我的坚持", onBack) }
         item {
             Spacer(Modifier.height(26.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                GoalIconBadge(goal.iconKey, size = 48.dp)
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    goal.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            Spacer(Modifier.height(22.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -1626,7 +1732,15 @@ private fun HistoryCard(goal: GoalSnapshot, today: LocalDate) {
             .border(1.dp, Hairline, RoundedCornerShape(18.dp))
             .padding(18.dp),
     ) {
-        Text(goal.name, style = MaterialTheme.typography.titleLarge)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            GoalIconBadge(goal.iconKey, size = 44.dp)
+            Spacer(Modifier.width(12.dp))
+            Text(
+                goal.name,
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.titleLarge,
+            )
+        }
         Spacer(Modifier.height(10.dp))
         Text(
             "${format.format(goal.startDate)} — ${goal.endDate?.let(format::format).orEmpty()}",
@@ -1734,6 +1848,7 @@ private fun SettingsCard(
     titleColor: Color = Ink,
     enabled: Boolean = true,
     onClick: (() -> Unit)? = null,
+    leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
     Row(
@@ -1752,6 +1867,10 @@ private fun SettingsCard(
             .padding(horizontal = 16.dp, vertical = 15.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (leading != null) {
+            leading()
+            Spacer(Modifier.width(12.dp))
+        }
         Text(
             title,
             modifier = Modifier.weight(1f),
@@ -1809,8 +1928,8 @@ private fun PrimaryButton(
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val buttonScale by animateFloatAsState(
-        targetValue = if (animatePress && pressed) 0.97f else 1f,
-        animationSpec = tween(durationMillis = 140),
+        targetValue = if (animatePress && pressed) 0.96f else 1f,
+        animationSpec = tween(durationMillis = 120),
         label = "primaryButtonScale",
     )
     Button(
