@@ -671,25 +671,16 @@ internal fun HomeScreen(
                     color = Ink,
                     fontSize = 14.sp,
                 )
-                if (!completedToday && !interrupted) {
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
-                            .clickable(role = Role.Button, onClick = onSettings)
-                            .semantics { contentDescription = "设置" },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text("⚙", color = Ink, fontSize = 27.sp)
-                    }
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .clickable(role = Role.Button, onClick = onSettings)
+                        .semantics { contentDescription = "设置" },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text("⚙", color = Ink, fontSize = 27.sp)
                 }
-            }
-
-            if (completedToday || interrupted) {
-                TextButton(
-                    onClick = onSettings,
-                    modifier = Modifier.height(48.dp),
-                ) { Text("设置 ›", color = Ink) }
             }
 
             when {

@@ -2,6 +2,7 @@ package com.boxsmall.onething.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import com.boxsmall.onething.domain.GoalSnapshot
 import com.boxsmall.onething.ui.theme.OneThingTheme
@@ -25,6 +26,8 @@ class InterruptedHomeScreenTest {
         composeRule.onNodeWithText("昨天没有完成").assertIsDisplayed()
         composeRule.onNodeWithText("今天继续。").assertIsDisplayed()
         composeRule.onNodeWithText("当前连续").assertDoesNotExist()
+        composeRule.onNodeWithContentDescription("设置").assertIsDisplayed()
+        composeRule.onNodeWithText("设置 ›").assertDoesNotExist()
     }
 
     @Test

@@ -85,6 +85,26 @@ class AdaptiveLayoutTest {
     }
 
     @Test
+    fun completedHomeKeepsSettingsInTopRightGear() {
+        val today = LocalDate.now()
+        composeRule.setContent {
+            OneThingTheme {
+                HomeScreen(
+                    goal = activeGoal(today).copy(completionDates = setOf(today)),
+                    today = today,
+                    busy = false,
+                    onComplete = {},
+                    onSettings = {},
+                    onRecord = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithContentDescription("设置").assertIsDisplayed()
+        composeRule.onNodeWithText("设置 ›").assertDoesNotExist()
+    }
+
+    @Test
     fun recordActionsRemainReachableAt320DpWithLargeText() {
         val today = LocalDate.now()
         composeRule.setContent {
